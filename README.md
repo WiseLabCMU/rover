@@ -27,4 +27,8 @@ Radar (Windows) computer:
 LIDAR (Linux) computer:
 1. Install [ROS Noetic](http://wiki.ros.org/noetic/Installation/Ubuntu)
 2. Install dependencies for [ouster-ros](https://github.com/ouster-lidar/ouster-ros)
-3. 
+3. Install `python3-catkin-tools`:
+```sh
+sudo apt-get install python3-catkin-tools
+```
+4. Follow manual installation instructions in `lidar/catkin_ws/src/xsens_ros_mti_driver`.
