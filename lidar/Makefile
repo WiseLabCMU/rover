@@ -7,18 +7,22 @@
 # -- ROS node setup -----------------------------------------------------------
 
 ROSINIT=source /opt/ros/noetic/setup.bash; source catkin_ws/devel/setup.bash
-ROSIMU="roslaunch xsens_mti_driver xsens_mti_node.launch"
-ROSLIDAR="roslaunch data_collection lidar.launch"
+ROSCORE="$(ROSINIT); roscore"
+ROSIMU="$(ROSINIT); roslaunch xsens_mti_driver xsens_mti_node.launch"
+ROSLIDAR="$(ROSINIT); roslaunch data_collection lidar.launch"
 
 .phony: roscore imu lidar
+sleep-%:
+	sleep $(@:sleep-%=%)
+
 roscore:
-	$(ROSINIT); screen -S roscore -dm bash -c "roscore"
+	screen -S roscore -dm bash -c $(ROSCORE)
 
 imu:
-	$(ROSINIT); screen -S imu -dm bash -c $(ROSIMU)
+	screen -S imu -dm bash -c $(ROSIMU)
 
 lidar:
-	$(ROSINIT); screen -S lidar -dm bash -c $(ROSLIDAR)
+	screen -S lidar -dm bash -c $(ROSLIDAR)
 
 
 # -- Data collection ----------------------------------------------------------
@@ -26,14 +30,18 @@ lidar:
 TOPICS=/imu/data /ouster/imu /ouster/points
 OUT?=out.bag
 
-.phony: init
-init: roscore imu
+.phony: init start collect stop deinit
+init: roscore sleep-0.5 imu
 
-.phony: start
-start: lidar
-	screen -S collect -dm bash -c "rosbag record -O $(OUT) $(TOPICS)"
+start: lidar sleep-2 collect
 
-.phony: stop
+collect:
+	screen -S collect -dm bash -c "$(ROSINIT); rosbag record -O $(OUT) $(TOPICS)"
+
 stop:
 	screen -S collect -p 0 -X stuff "^C"
 	screen -S lidar -p 0 -X stuff "^C"
+
+deinit:
+	screen -S imu -p 0 -X stuff "^C"
+	screen -S roscore -p 0 -X stuff "^C"
