@@ -48,7 +48,7 @@ These steps assume you have already set up the system according to the [instruct
 
 0. Launch mmWave Studio, and wait for the initialization script to finish.
 
-1. Select the `radar/manual_init.lua` script in the bottom dropdown, and click `run` on the left.
+1. Select the `radar/scripts/manual_init.lua` script in the bottom dropdown, and click `run` on the left.
     - This configures the radar and capture card. Due to software jankiness in mmWave studio, both must be re-flashed each time mmWave studio is restarted.
 
 **On each data collection**:
@@ -58,11 +58,11 @@ These steps assume you have already set up the system according to the [instruct
     python todo.py todo todo
     ```
 
-3. In mmWave studio, select `radar/manual_start.lua` in the bottom dropdown, and click `run`. The data collection script should show status messages as data is collected:
+3. In mmWave studio, select `radar/scripts/manual_start.lua` in the bottom dropdown, and click `run`. The data collection script should show status messages as data is collected:
     ```
     todo todo todo
     ```
 
-4. When finished, select `radar/manual_stop.lua` in the bottom dropdown, and click `run`.
+4. When finished, select `radar/scripts/manual_stop.lua` in the bottom dropdown, and click `run`.
     - This will create a temporary file at the path specified in `build.py` (default: `rover/radar/tmp.bin`) which you can delete.
     - The data collection setup should raise an error (or time out).

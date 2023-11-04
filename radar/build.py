@@ -19,8 +19,8 @@ def _winpath(p):
 if __name__ == '__main__':
     p = ArgumentParser(description="Render lua scripts from templates.")
     p.add_argument(
-        "--com", type=str, default="4",
-        help="XDS110 Class Application/User UART COM Port.")
+        "--com", type=int, default=4,
+        help="XDS110 Class Application/User UART COM Port number.")
     p.add_argument(
         "--tmpfile", type=str, default="./tmp.bin",
         help="Data recording temporary file to pass to mmWave studio.")
@@ -33,7 +33,9 @@ if __name__ == '__main__':
     context = {
         "com": args.com,
         "tmpfile": _winpath(os.path.abspath(args.tmpfile)),
-        "mmwave_studio": _winpath(args.mmwave_studio)
+        "mmwave_studio": _winpath(args.mmwave_studio),
+        "tx_file": _winpath(os.path.abspath("msg/tx")),
+        "rx_file": _winpath(os.path.abspath("msg/rx"))
     }
 
     os.makedirs("scripts", exist_ok=True)

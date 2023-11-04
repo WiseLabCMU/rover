@@ -6,6 +6,7 @@ lidar/catkin_ws/logs
 # Radar
 radar/scripts
 radar/tmp.bin
+radar/msg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
