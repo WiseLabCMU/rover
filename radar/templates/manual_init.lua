@@ -1,20 +1,16 @@
 ar1.FullReset()
 ar1.SOPControl(2)
 
--- Connect:
--- [0] COM port number
--- [1] Serial baud rate
--- [2] (undocumented)
-ar1.Connect(4, 115200, 1000)
+ar1.Connect({com}, 115200, 1000)
 
 ar1.Calling_IsConnected()
 ar1.deviceVariantSelection("XWR1843")
 ar1.frequencyBandSelection("77G")
 ar1.SelectChipVersion("XWR1843")
-ar1.DownloadBSSFw("C:\\ti\\mmwave_studio_02_01_01_00\\rf_eval_firmware\\radarss\\xwr18xx_radarss.bin")
+ar1.DownloadBSSFw("{mmwave_studio}\\rf_eval_firmware\\radarss\\xwr18xx_radarss.bin")
 ar1.GetBSSFwVersion()
 ar1.GetBSSPatchFwVersion()
-ar1.DownloadMSSFw("C:\\ti\\mmwave_studio_02_01_01_00\\rf_eval_firmware\\masterss\\xwr18xx_masterss.bin")
+ar1.DownloadMSSFw("{mmwave_studio}\\rf_eval_firmware\\masterss\\xwr18xx_masterss.bin")
 ar1.GetMSSFwVersion()
 ar1.PowerOn(0, 1000, 0, 0)
 ar1.RfEnable()

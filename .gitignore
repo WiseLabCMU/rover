@@ -1,3 +1,12 @@
+# ROS files
+lidar/catkin_ws/src/devel
+lidar/catkin_ws/src/build
+lidar/catkin_ws/logs
+
+# Radar
+radar/scripts
+radar/tmp.bin
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
