@@ -1,6 +1,6 @@
 # ROS files
-lidar/catkin_ws/src/devel
-lidar/catkin_ws/src/build
+lidar/catkin_ws/devel
+lidar/catkin_ws/build
 lidar/catkin_ws/logs
 
 # Radar
