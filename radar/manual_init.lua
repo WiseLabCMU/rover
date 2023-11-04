@@ -1,14 +1,3 @@
----------------------------------- STARTUP -------------------------------------
------------------------- DO NOT MODIFY THIS SECTION ----------------------------
-
--- mmwavestudio installation path
-RSTD_PATH = RSTD.GetRstdPath()
-
--- Declare the loading function
-dofile(RSTD_PATH .. "\\Scripts\\Startup.lua")
-
------------------------------------ CONFIG -------------------------------------
-
 ar1.FullReset()
 ar1.SOPControl(2)
 
