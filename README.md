@@ -1,9 +1,12 @@
 # Rover
 Radar chirp data collection platform based on the TI AWR1843/DCA1000EVM.
 
-See the [setup guide](setup.md) and [manual data collection instructions](manual.md) for more detailed guides.
-
 TODO: add some pictures
+
+This repository contains three components, each of which should run on a different machine:
+- `lidar`: LIDAR/IMU data collection infrastructure for an Ouster LIDAR + Xsens IMU.
+- `radar`: Radar data collection infrastructure for the TI AWR1843Boost + DCA1000EVM.
+- `processing`: Radar/LIDAR/IMU data processing to create the final dataset.
 
 ## Physical Hardware
 
@@ -24,9 +27,15 @@ Control System Options:
 2. Manual Control (Recommended with a cart):
     - **Use a laptop for the Windows and Linux computers**, or connect external displays and keyboards to each.
 
+## Setup
+
+See the [setup guide](docs/setup.md).
+
 ## Usage
 
 Note that these steps should be performed simultaneously on the Linux and Windows computer. In particular, `make start` and `python collect.py` should be performed right before the actual data collection step to avoid excess file size.
+
+For a detailed step-by-step breakdown which bypasses any high-level automation for troubleshooting/development, see the [manual data collection instructions](docs/manual.md).
 
 **Linux Computer**, in the `rover/lidar/` directory:
 
