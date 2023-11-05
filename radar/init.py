@@ -8,6 +8,8 @@ import subprocess
 with open("config.json") as f:
     cfg = json.load(f)
 
-subprocess.Popen([
-    os.path.join(cfg["mmwave_studio", "RunTime", "mmWaveStudio.exe"]),
-    "/lua", "scripts\\server.lua"])
+script = os.path.join(os.path.dirname(__file__), "scripts", "server.lua")
+cwd = os.getcwd()
+os.chdir(os.path.join(cfg["mmwave_studio"], "mmWaveStudio", "RunTime"))
+subprocess.Popen(["mmWaveStudio.exe", "/lua", script])
+os.chdir(cwd)

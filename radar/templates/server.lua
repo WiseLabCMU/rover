@@ -55,16 +55,18 @@ ar1.CaptureCardConfig_Mode(1, 2, 1, 2, 3, 30)
 ar1.CaptureCardConfig_PacketDelay(25)
 ar1.GetCaptureCardFPGAVersion()
 
+print("Initialization complete.")
+
 -- Server ---------------------------------------------------------------------
 
 function read()
-    local file = io.open("{rx_file}", "r")
+    local file = io.open("{msgfile}", "r")
     if not file then
         return nil, nil
     end
     local msg = file:read("*a")
     file:close()
-    os.remove("{rx_file}")
+    os.remove("{msgfile}")
     return msg
 end
 
@@ -72,15 +74,19 @@ running = false
 while true do
     msg = read()
     if msg == "start" then
-        if running = false then
+        if running == false then
+            print("Starting capture...")
             ar1.CaptureCardConfig_StartRecord("{tmpfile}", 1)
             ar1.StartFrame()
+            running = true
         else
             print("Tried to start an already-running radar.")
         end
     elseif msg == "stop" then
-        if running = true then
+        if running == true then
+            print("Stopping capture...")
             ar1.StopFrame()
+            running = false
         else
             print("Tried to stop an already-stopped radar.")
         end

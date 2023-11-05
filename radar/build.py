@@ -19,8 +19,12 @@ def _winpath(p):
 if __name__ == '__main__':
     with open("config.json") as f:
         cfg = json.load(f)
-    cfg["tmpfile"] = _winpath(os.path.abspath(cfg["tmpfile"]))
-    cfg["msgfile"] = _winpath(os.path.abspath(cfg["msgfile"]))
+    cfg["tmpfile"] = os.path.abspath(cfg["tmpfile"])
+    cfg["msgfile"] = os.path.abspath(cfg["msgfile"])
+
+    for k, v in cfg.items():
+        if isinstance(v, str):
+            cfg[k] = _winpath(v)
 
     os.makedirs("scripts", exist_ok=True)
     for file in os.listdir("templates"):

@@ -1,4 +1,4 @@
-"""Radar data collection.
+r"""Radar data collection.
 
 ::
     ______  _____  _    _ _______  ______
@@ -119,12 +119,19 @@ def radarcollect(args, cfg):
                 if dataset.chunk_packets >= PACKET_BUFSIZE:
                     dataset.flush()
         except Exception as e:
-            dataset.flush()
             print("Radar data collection failed. Was the radar shut down?")
             print(e)
+        except KeyboardInterrupt:
+            print(
+                "Received KeyboardInterrupt, stopping.\n"
+                "Do not press Ctrl+C again!")
+            with open(cfg["msgfile"], 'w') as f:
+                f.write("stop")
+        finally:
+            dataset.flush()
 
-    print(f'Total capture time: {time.time() - dataset.start_time}s\n')
-    print("Total packets captured ", dataset.total_packets)
+    print(f'Total capture time: {time.time() - dataset.start_time}s')
+    print(f"Total packets captured: {dataset.total_packets}")
     data_socket.close()
     _config_socket.close()
 
@@ -145,8 +152,4 @@ if __name__ == '__main__':
     if args.output is None:
         args.output = datetime.now().strftime("%Y.%m.%d-%H.%M.%S") + ".h5"
 
-    try:
-        radarcollect(args, cfg)
-    except KeyboardInterrupt:
-        with open(cfg["msgfile"], 'w') as f:
-            f.write("stop")
+    radarcollect(args, cfg)
