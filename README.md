@@ -3,33 +3,49 @@ Radar chirp data collection platform based on the TI AWR1843/DCA1000EVM.
 
 See the [setup guide](setup.md) and [manual data collection instructions](manual.md) for more detailed guides.
 
+TODO: add some pictures
+
+## Physical Hardware
+
+- **[AWR1843Boost Evaluation Board](https://www.ti.com/tool/AWR1843BOOST)**; uses a 5v 3A power supply.
+- **[DCA1000EVM Capture Card](https://www.ti.com/tool/DCA1000EVM)**; powered via the AWR1843.
+- **2 micro USB cables** connected to the AWR1843 and to the `RADAR_FTDI` port on the DCA1000EVM.
+    - **NOTE**: sketchy USB cables may cause the radar/capture card to fail to be detected.
+- **1 Windows computer** (GUI required) for Radar data collection.
+- **1 Ubuntu 20.04 (focal) computer** for Lidar/IMU data collection.
+- **1 AC Battery Bank** for powering the setup, with an additional power strip if required.
+
+Control System Options:
+1. RDP + SSH (Recommended for handheld operation):
+    - **1 Windows laptop** for controlling the Windows computer (via Windows RDP).
+    - **1 (Wireless) Router** that both computers and the laptop should connect to. Can be replaced with a wired solution if multiple LAN ports are available on each computer (adapters are ok).
+    - Make sure to connect both computers to the same network, and assign them known host names (e.g. `dart-lidar` and `dart-radar`).
+    - Set static IPs to the radar and lidar computers.
+2. Manual Control (Recommended with a cart):
+    - **Use a laptop for the Windows and Linux computers**, or connect external displays and keyboards to each.
+
 ## Usage
+
+Note that these steps should be performed simultaneously on the Linux and Windows computer. In particular, `make start` and `python collect.py` should be performed right before the actual data collection step to avoid excess file size.
 
 **Linux Computer**, in the `rover/lidar/` directory:
 
-0. Synchronize time with the windows computer:
-    ```sh
-    sudo ntpdate dart-radar.local
-    ```
-
-1. Initialize ROS nodes.
-    ```sh
-    make init
-    ```
-
-2. On each data collection:
+- On reboot:
+    1. Synchronize time with the windows computer: `sudo ntpdate dart-radar.local`
+    2. Initialize ROS nodes: `make init`
+- On each data collection:
     1. Plug in the LIDAR. Wait until you can hear/feel the LIDAR reaching a steady state after spinning up.
-    2. Start data collection.
-        ```sh
-        OUT=out.bag make start
-        ```
-    3. Stop data collection:
-        ```sh
-        make stop
-        ```
+    2. Start data collection: `OUT=out.bag make start` (replace `out.bag` with the desired output file name).
+    3. Stop data collection: `make stop`.
     4. Unplug the LIDAR.
+- Cleanup: `make deinit`
 
-3. Cleanup:
-    ```sh
-    make deinit
-    ```
+**Windows Computer**, in the `rover/radar` directory:
+
+- On reboot:
+    1. Power on the Radar, and make sure the `XDS110 Class Application/User UART` COM port matches what you have in `config.json`.
+    2. Launch mmWave studio: `python init.py`
+- On each data collection:
+    1. Run `python collect.py`.
+    2. Press `ctrl+C` on `python collect.py` when finished. **Do not close mmWave Studio**, or you will need to restart the whole procedure and reflash the radar and capture card.
+- Cleanup: close the mmWave studio window. The radar can stay powered on.

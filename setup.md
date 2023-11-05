@@ -1,28 +1,7 @@
 
 # Setup Instructions
 
-TODO: add some pictures
-
-## Physical Hardware
-
-- **[AWR1843Boost Evaluation Board](https://www.ti.com/tool/AWR1843BOOST)**; uses a 5v 3A power supply.
-- **[DCA1000EVM Capture Card](https://www.ti.com/tool/DCA1000EVM)**; powered via the AWR1843.
-- **2 micro USB cables** connected to the AWR1843 and to the `RADAR_FTDI` port on the DCA1000EVM.
-    - **NOTE**: sketchy USB cables may cause the radar/capture card to fail to be detected.
-- **1 Windows computer** (GUI required) for Radar data collection.
-- **1 Ubuntu 20.04 (focal) computer** for Lidar/IMU data collection.
-- **1 AC Battery Bank** for powering the setup, with an additional power strip if required.
-
-Control System Options:
-1. RDP + SSH (Recommended for handheld operation):
-    - **1 Windows laptop** for controlling the Windows computer (via Windows RDP).
-    - **1 (Wireless) Router** that both computers and the laptop should connect to. Can be replaced with a wired solution if multiple LAN ports are available on each computer (adapters are ok).
-    - Make sure to connect both computers to the same network, and assign them known host names (e.g. `dart-lidar` and `dart-radar`).
-    - Set static IPs to the radar and lidar computers.
-2. Manual Control (Recommended with a cart):
-    -  Use a laptop for the Windows and Linux computers, or connect external displays and keyboards to each.
-
-### Radar (Windows) Computer
+## Radar (Windows) Computer
 
 0. If using RDP to control the data collection system, set up a RDP connection on the Windows laptop.
     1. Open the `Remote Desktop Connection` program (should be a default program on Windows).
@@ -30,7 +9,7 @@ Control System Options:
     3. (Optional) Create a shortcut: click `Show Options`, then `Save As...`.
 
 1. If manual time synchronization is required, set up the Windows computer as a NTP server.
-    - You can also use the linux computer as a NTP server or an external NTP server (preferred). Only follow these instructions if that is not possible.
+    - You can also use the linux computer as a NTP server or a common external NTP server (preferred). Only follow these instructions if that is not possible.
     - See full instructions [here](https://techlibrary.hpe.com/docs/otlink-wo/How-to-Configure-a-Local-NTP-Server.html).
 
 2. Install mmWave studio & dependencies. See the [DCA1000EVM Quick Start Guide](https://www.ti.com/tool/DCA1000EVM) for full instructions.
@@ -53,9 +32,12 @@ Control System Options:
         2. Click the `Set` button under `Board Control / Reset Control / Reset`. Wait for the board to finish resetting.
         3. Select the COM port in the `Board Control / RS232 Operations` dropdown.
         4. Click `Connect`. The `RS232 Connectivity Status` field should turn to `Connected`.
-    - In the `rover/radar` directory, build lua scripts from templates, replacing `COM4` with the appropriate COM port name.
+    - Copy sample configuration `rover/radar/_config.json` to `rover/radar/config.json`, and update it with your configuration parameters.
+        - Make sure to set the `com` entry with the COM port number noted above.
+        - Unless you have a non-standard mmWave Studio installation, none of the other fields need to be changed.
+    - Build the lua scripts:
         ```sh
-        python build.py --com COM4
+        python build.py
         ```
 
 ## LIDAR (Ubuntu 20.04) Computer
