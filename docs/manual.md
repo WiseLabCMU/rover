@@ -55,13 +55,16 @@ These steps assume you have already set up the system according to the [instruct
 
 2. Start the data collection script. This "steals" the radar socket from mmWave studio.
     ```sh
-    python todo.py todo todo
+    python collect.py
     ```
 
 3. In mmWave studio, select `radar/scripts/manual_start.lua` in the bottom dropdown, and click `run`. The data collection script should show status messages as data is collected:
     ```
-    todo todo todo
+    [t=1.104s] Flushing 8192 packets.
+    [t=1.838s] Flushing 8192 packets.
+    ...
     ```
+    - Data collection will create around 1GB of data per minute.
 
 4. When finished, select `radar/scripts/manual_stop.lua` in the bottom dropdown, and click `run`.
     - This will create a temporary file at the path specified in `build.py` (default: `rover/radar/tmp.bin`) which you can delete.

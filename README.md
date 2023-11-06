@@ -44,24 +44,24 @@ Note that these steps should be performed simultaneously on the Linux and Window
 
 For a detailed step-by-step breakdown which bypasses any high-level automation for troubleshooting/development, see the [manual data collection instructions](docs/manual.md).
 
-**Linux Computer**, in the `rover/lidar/` directory:
+**Linux Computer**, in the `rover/lidar/` directory (collects 3.5GB/minute):
 
-- On reboot:
+- On reboot (~15 seconds):
     1. Synchronize time with the windows computer: `sudo ntpdate dart-radar.local`
     2. Initialize ROS nodes: `make init`
-- On each data collection:
+- On each data collection (~30 seconds):
     1. Plug in the LIDAR. Wait until you can hear/feel the LIDAR reaching a steady state after spinning up.
     2. Start data collection: `OUT=out.bag make start` (replace `out.bag` with the desired output file name).
     3. Stop data collection: `make stop`.
     4. Unplug the LIDAR.
 - Cleanup: `make deinit`
 
-**Windows Computer**, in the `rover/radar` directory:
+**Windows Computer**, in the `rover/radar` directory (collects 1GB/minute):
 
-- On reboot:
+- On reboot (~2 minutes):
     1. Power on the Radar, and make sure the `XDS110 Class Application/User UART` COM port matches what you have in `config.json`.
-    2. Launch mmWave studio: `python init.py`
-- On each data collection:
+    2. Launch mmWave studio, and wait for all initialization commands to complete: `python init.py`
+- On each data collection (~5 seconds):
     1. Run `python collect.py`.
-    2. Press `ctrl+C` on `python collect.py` when finished. **Do not close mmWave Studio**, or you will need to restart the whole procedure and reflash the radar and capture card.
-- Cleanup: close the mmWave studio window. The radar can stay powered on.
+    2. Press `ctrl+C` *once* on `python collect.py` when finished. **Do not close mmWave Studio**, or you will need to restart the whole procedure and reflash the radar and capture card.
+- Cleanup: close mmWave studio. The radar can stay powered on.
