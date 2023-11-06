@@ -1,7 +1,7 @@
 # Rover
 Radar chirp data collection platform based on the TI AWR1843/DCA1000EVM.
 
-TODO: add some pictures
+![Data collection system.](docs/equipment.svg)
 
 This repository contains three components, each of which should run on a different machine:
 - `lidar`: LIDAR/IMU data collection infrastructure for an Ouster LIDAR + Xsens IMU.
@@ -10,12 +10,19 @@ This repository contains three components, each of which should run on a differe
 
 ## Physical Hardware
 
-- **[AWR1843Boost Evaluation Board](https://www.ti.com/tool/AWR1843BOOST)**; uses a 5v 3A power supply.
-- **[DCA1000EVM Capture Card](https://www.ti.com/tool/DCA1000EVM)**; powered via the AWR1843.
-- **2 micro USB cables** connected to the AWR1843 and to the `RADAR_FTDI` port on the DCA1000EVM.
-    - **NOTE**: sketchy USB cables may cause the radar/capture card to fail to be detected.
 - **1 Windows computer** (GUI required) for Radar data collection.
 - **1 Ubuntu 20.04 (focal) computer** for Lidar/IMU data collection.
+- **[AWR1843Boost Evaluation Board](https://www.ti.com/tool/AWR1843BOOST)**
+    - **1 micro USB cable** connecting the AWR1843's USB port to the windows computer.
+    - **5v 3A power supply**
+    - **NOTE**: sketchy USB cables may cause the radar/capture card to fail to be detected.
+- **[DCA1000EVM Capture Card](https://www.ti.com/tool/DCA1000EVM)**
+    - Powered via the AWR1843Boost.
+    - **1 micro USB cable** connecting the `RADAR_FTDI` port to the windows computer.
+- **[Ouster OS0-64 LIDAR](https://ouster.com/products/hardware/os0-lidar-sensor)**
+    - **1 Cat5 ethernet cable** connecting the LIDAR interface box to the linux computer.
+- **[Xsens MTi-3 AHRS Development Kit](https://shop.movella.com/us/product-lines/sensor-modules/products/mti-3-ahrs-development-kit)**
+    - **1 micro USB cable** connecting the IMU's USB port to the linux computer.
 - **1 AC Battery Bank** for powering the setup, with an additional power strip if required.
 
 Control System Options:
