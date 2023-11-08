@@ -70,12 +70,12 @@ For a detailed step-by-step breakdown which bypasses any high-level automation f
 
 - Copy the collected lidar and radar data to a folder; name the lidar data `lidar.bag`, and the radar data `radarpackets.h5`.
 
-- Run cartographer:
+- Run cartographer (~30 minutes):
     ```sh
     DIR=<dataset_directory> make
     ```
     - Replace `<dataset_directory>` to the folder containing `lidar.bag` and `radarpackets.h5`; all output files are also placed in this folder.
-    - When running the makefile, the first step (`roslaunch slam offline_cart_3d.launch ...`) will wait indefinitely after it finishes. This process needs to be manually killed, after which the makefile should resume.
+    - When running the makefile, the first step (`roslaunch slam offline_cart_3d.launch ...`) will wait indefinitely after it finishes if rviz is enabled. If this happens, close the rviz window, and the script will continue. **DO NOT** use `ctrl+c`; this will cancel the makefile as well.
     - Instead of passing `DIR=...`, you can alternatively copy this makefile to the `<dataset_directory>` and simply `make`.
 
 - Run radar processing & dataset packaging:

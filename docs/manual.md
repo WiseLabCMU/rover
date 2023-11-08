@@ -79,13 +79,15 @@ These steps assume you have already set up the system according to the [instruct
     ```sh
     roslaunch slam offline_cart_3d.launch bag_filenames:=lidar.bag
     ```
-    - **NOTE**: you will need to *manually* kill the process with `ctrl+c` after it completes.
-2. Generate pose graph:
+    - **NOTE**: you may need to *manually* kill the process by closing the rviz window with `ctrl+c` after it completes.
+    - This step took ~6 minutes for a 9:15 trace.
+2. Generate point cloud / occupancy grid:
     ```sh
     roslaunch slam assets_writer_cart_3d.launch \
         bag_filenames:=lidar.bag pose_graph_filename:=lidar.bag.pbstream
     ```
     - This step also creates several output map images (`lidar.bag_xray_{xy, yz, xz}_all.png`, `lidar.bag_probability_grid.png`); verify that these images look about right for the scene you've captured.
+    - This step took ~24 minutes for a 9:15 trace.
 3. Output poses:
     ```sh
     rosrun cartographer_ros cartographer_dev_pbstream_trajectories_to_rosbag \
