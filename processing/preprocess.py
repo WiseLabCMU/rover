@@ -7,7 +7,7 @@ from tqdm import tqdm
 import numpy as np
 from argparse import ArgumentParser
 
-from preprocess import AWR1843Boost, AWR1843BoostDataset, Trajectory
+from process import AWR1843Boost, AWR1843BoostDataset, Trajectory
 
 
 _desc = """Preprocess radar and pose data.

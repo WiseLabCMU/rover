@@ -69,3 +69,45 @@ These steps assume you have already set up the system according to the [instruct
 4. When finished, select `radar/scripts/manual_stop.lua` in the bottom dropdown, and click `run`.
     - This will create a temporary file at the path specified in `build.py` (default: `rover/radar/tmp.bin`) which you can delete.
     - The data collection setup should raise an error (or time out).
+
+## Data Processing
+
+**Cartographer**:
+
+0. Copy the output Lidar and Radar data to the same folder, and name them `lidar.bag` and `radarpackets.h5` respectively.
+1. Run cartographer:
+    ```sh
+    roslaunch slam offline_cart_3d.launch bag_filenames:=lidar.bag
+    ```
+    - **NOTE**: you will need to *manually* kill the process with `ctrl+c` after it completes.
+2. Generate pose graph:
+    ```sh
+    roslaunch slam assets_writer_cart_3d.launch \
+        bag_filenames:=lidar.bag pose_graph_filename:=lidar.bag.pbstream
+    ```
+    - This step also creates several output map images (`lidar.bag_xray_{xy, yz, xz}_all.png`, `lidar.bag_probability_grid.png`); verify that these images look about right for the scene you've captured.
+3. Output poses:
+    ```sh
+    rosrun cartographer_ros cartographer_dev_pbstream_trajectories_to_rosbag \
+        --input lidar.bag.pbstream --output pose.bag
+    rostopic echo -b pose.bag -p trajectory_0 > trajectory.csv
+    ```
+
+**Radar Processing**:
+
+0. Only the `radarpackets.h5` and `trajectory.csv` files are needed for radar processing.
+
+1. Process radar data:
+    ```sh
+    python preprocess.py -p <dataset_folder>
+    ```
+    - Pass `<dataset_folder>` as the name of the folder containing `radarpackets.h5` and `trajectory.csv` (i.e. the dataset path).
+    - You may need to tune `--smooth 1.0`, which indicates the gaussian smoothing width (higher `--smooth` == more smoothing) to be applied to the velocity.
+    - You may also need to reduce `--batch` if your GPU does not have enough memory (default: `--batch 1000000`)
+
+2. (Optional) Verify time synchronization:
+    ```sh
+    python speed_report.py <dataset_folder>
+    ```
+    - Check that the inferred speed mostly matches the measured/processed speed.
+    - Make sure that not too much of the dataset is invalid (due to speeds outside the specified window).

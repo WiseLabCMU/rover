@@ -85,3 +85,19 @@
     ```
     - Use `catkin clean` to delete all built files if a rebuild is needed.
     - `--cmake-args -DCMAKE_BUILD_TYPE=Release` is needed for `ouster-ros`.
+
+## Data Processing Computer
+
+Install the following on a fast computer, ideally with both good single-core CPU performance and a GPU.
+
+**Cartographer**: You're on your own for this one.
+
+0. [ROS Noetic](http://wiki.ros.org/noetic) is required.
+1. [Cartographer ROS](https://github.com/cartographer-project/cartographer_ros) placed inside the currently sourced `catkin_ws`.
+
+**Python**: The python environment for [DART](https://github.com/thetianshuhuang/dart) is a superset of `rover`, so you can use that if you have one set up.
+
+0. Ensure that you have python (>=3.8) and CUDA (>=11.8).
+1. Install [jax](https://github.com/google/jax).
+2. Install `libhdf5`: ```sudo apt-get -y install libhdf5-dev```
+3. Install python dependencies: ```pip install -r processing/requirements.txt```

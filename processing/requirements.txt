@@ -1,0 +1,8 @@
+numpy
+h5py
+beartype
+jaxtyping
+scipy
+pandas
+tqdm
+matplotlib

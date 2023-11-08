@@ -103,7 +103,7 @@ class Trajectory(NamedTuple):
         speed_radar: Float32[ArrayLike, "N"],
         smoothing: float = -1.0, adjust: bool = False,
         reject_threshold: float = 0.3, reject_kernel: int = 7,
-        max_adjustment: float = 0.2, adjust_kernel: int = 15
+        max_adjustment: float = 0.5, adjust_kernel: int = 15
     ) -> Float32[ArrayLike, "N 3"]:
         """Apply smoothing and velocity scaling.
 

@@ -28,7 +28,7 @@ lidar:
 # -- Data collection ----------------------------------------------------------
 
 TOPICS=/imu/data /ouster/imu /ouster/points
-OUT?=out.bag
+OUT?=lidar.bag
 
 .phony: init start collect stop deinit
 init: roscore sleep-0.5 imu
@@ -36,7 +36,8 @@ init: roscore sleep-0.5 imu
 start: lidar sleep-2 collect
 
 collect:
-	screen -S collect -dm bash -c "$(ROSINIT); rosbag record -O $(OUT) $(TOPICS)"
+	screen -S collect -dm bash -c \
+		"$(ROSINIT); rosbag record -O $(OUT) $(TOPICS)"
 
 stop:
 	screen -S collect -p 0 -X stuff "^C"

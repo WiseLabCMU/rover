@@ -51,7 +51,7 @@ For a detailed step-by-step breakdown which bypasses any high-level automation f
     2. Initialize ROS nodes: `make init`
 - On each data collection (~30 seconds):
     1. Plug in the LIDAR. Wait until you can hear/feel the LIDAR reaching a steady state after spinning up.
-    2. Start data collection: `OUT=out.bag make start` (replace `out.bag` with the desired output file name).
+    2. Start data collection: `OUT=lidar.bag make start` (replace `lidar.bag` with the desired output file name).
     3. Stop data collection: `make stop`.
     4. Unplug the LIDAR.
 - Cleanup: `make deinit`
@@ -65,3 +65,21 @@ For a detailed step-by-step breakdown which bypasses any high-level automation f
     1. Run `python collect.py`.
     2. Press `ctrl+C` *once* on `python collect.py` when finished. **Do not close mmWave Studio**, or you will need to restart the whole procedure and reflash the radar and capture card.
 - Cleanup: close mmWave studio. The radar can stay powered on.
+
+**Data Processing**, on a separate computer with `cartographer-ros` installed:
+
+- Copy the collected lidar and radar data to a folder; name the lidar data `lidar.bag`, and the radar data `radarpackets.h5`.
+
+- Run cartographer:
+    ```sh
+    DIR=<dataset_directory> make
+    ```
+    - Replace `<dataset_directory>` to the folder containing `lidar.bag` and `radarpackets.h5`; all output files are also placed in this folder.
+    - When running the makefile, the first step (`roslaunch slam offline_cart_3d.launch ...`) will wait indefinitely after it finishes. This process needs to be manually killed, after which the makefile should resume.
+    - Instead of passing `DIR=...`, you can alternatively copy this makefile to the `<dataset_directory>` and simply `make`.
+
+- Run radar processing & dataset packaging:
+    ```sh
+    python preprocess.py -p <dataset_folder>
+    python speed_report.py -p <dataset_folder>
+    ```
