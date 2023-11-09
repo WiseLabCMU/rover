@@ -29,7 +29,9 @@ class Trajectory(NamedTuple):
     slerp: Slerp
 
     @classmethod
-    def from_csv(cls, path: str, offset: float = 0.0) -> "Trajectory":
+    def from_csv(
+        cls, path: str, smooth: float = 1.0
+    ) -> "Trajectory":
         """Initialize from dataframe output from cartographer.
 
         Parameters
@@ -38,16 +40,17 @@ class Trajectory(NamedTuple):
             csv "trajectory.csv", with columns
             `field.header.stamp` (in ns), `field.transform.translation.{xyz}`,
             `field.transform.rotation.{xyzw}`.
-        offset: Time sync offset (seconds) to apply to the timestamps.
+        smooth: Gaussian smoothing to apply.
         """
         df = pd.read_csv(os.path.join(path, "trajectory.csv"))
-
-        # Manual 0.5s offset, likely due to buffering the DCA1000
-        t_slam = np.array(df["field.header.stamp"]) / 1e9 + offset
+        t_slam = np.array(df["field.header.stamp"]) / 1e9
 
         xyz = np.array(
-            [df["field.transform.translation." + char] for char in "xyz"])
-        spline = Akima1DInterpolator(t_slam, xyz.T)
+            [df["field.transform.translation." + char] for char in "xyz"]).T
+        if smooth > 0:
+            xyz = gaussian_filter1d(xyz, sigma=smooth, axis=0)
+
+        spline = Akima1DInterpolator(t_slam, xyz)
 
         rot = Rotation.from_quat(np.array(
             [df["field.transform.rotation." + char] for char in "xyzw"]).T)

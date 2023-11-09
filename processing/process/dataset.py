@@ -3,10 +3,10 @@
 import numpy as np
 
 from beartype.typing import NamedTuple, Union
-from jaxtyping import Complex64, Int16, Float64, Float16, Float, Array
+from jaxtyping import (
+    Complex64, Int16, Float64, Float32, Float16, Float64, Array)
 
 from .radar import AWR1843Boost
-from .trajectory import Trajectory
 
 
 ArrayLike = Union[Array, np.ndarray]
@@ -125,34 +125,26 @@ class AWR1843BoostDataset(NamedTuple):
         return self._to_iq(radar, data), times
 
     def process_data(
-        self, radar: AWR1843Boost, trajectory: Trajectory, packets
+        self, radar: AWR1843Boost, packets
     ) -> tuple[
         Float16[ArrayLike, "idx antenna range doppler"],
-        dict[str, Float[ArrayLike, "idx ..."]]
+        Float32[ArrayLike, "idx"],
+        Float64[ArrayLike, "idx"]
     ]:
         """Process dataset.
 
         Parameters
         ----------
         radar: Radar object with radar processing routines.
-        trajectory: Dataset trajectory for pose interpolation / smoothing.
         packets: Radar packet dataset.
 
         Returns
         -------
         rda: Processed range-doppler-azimuth images.
-        pose: Pose information (position, rotation, velocity, time) formatted
-            as a dictionary.
+        speed: Estimated speed based on doppler thresholding.
+        t_image: Timestamp of each frame (epoch time).
         """
         chirps, t_chirp = self.as_chirps(radar, packets)
-        rda, speed_radar = radar.process_data(chirps)
+        rda, speed = radar.process_data(chirps)
         t_image = radar.process_timestamps(t_chirp)
-
-        window_size = radar.frame_time * 0.5
-        t_valid = trajectory.valid_mask(t_image, window=window_size)
-        pose = trajectory.interpolate(t_image[t_valid], window=window_size)
-        pose["t"] = t_image[t_valid]
-        pose["speed"] = speed_radar[t_valid]
-
-        return rda[t_valid], pose
-    
+        return rda, speed, t_image
