@@ -72,9 +72,9 @@ def _main(args):
         try:
             rda, speed, t = _process_batch(radar, packets[:args.batch])
 
+            total_size += rda.shape[0]
             rda_dataset.resize((total_size, *radar.image_shape))
             rda_dataset[-rda.shape[0]:] = rda
-            total_size += rda.shape[0]
 
             speed_data.append(speed)
             t_data.append(t)
