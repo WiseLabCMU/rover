@@ -1,8 +1,4 @@
-"""Process trajectory created by Cartographer.
-
-Takes a `trajectory.csv` file and already-processed `radar.h5` file, and
-outputs a `trajectory.h5` processed file.
-"""
+"""Process trajectory created by Cartographer (`trajectory.h5`)."""
 
 import h5py
 import os
@@ -13,7 +9,9 @@ from process import Trajectory, AWR1843Boost
 
 
 def _parse(p):
-    p.add_argument("-p", "--path", help="Dataset path.")
+    p.add_argument(
+        "-p", "--path",
+        help="Dataset path; should contain a `trajectory.csv` file.")
     p.add_argument(
         "-v", "--overwrite", help="Overwrite existing data file.",
         default=False, action='store_true')
@@ -25,7 +23,7 @@ def _parse(p):
         default=0.2, type=float)
     p.add_argument(
         "--max_accel", help="Maximum allowed acceleration (m/s^2).",
-        default=0.5, type=float)
+        default=2.0, type=float)
     p.add_argument(
         "--accel_excl", help="Exclusion width for acceleration violations.",
         default=15, type=int)
@@ -48,12 +46,14 @@ def _main(args):
     speed = np.linalg.norm(poses['vel'], axis=1)
     accel = np.concatenate(
         [np.zeros(1), np.diff(speed) / np.diff(t_radar[mask])])
+
+    # Seems like scipy's type hints for binary_dilation are incorrect.
     valid = (
-        ~binary_dilation(
+        ~binary_dilation(  # type: ignore
             accel > args.max_accel,
             np.ones(args.accel_excl, dtype=bool))
-        & ~binary_dilation(
-            (speed > radar.dmax / 2) & (speed < args.min_speed),
+        & ~binary_dilation(  # type: ignore
+            (speed > radar.dmax / 2) | (speed < args.min_speed),
             np.ones(args.speed_excl, dtype=bool)))
 
     poses['t'] = t_radar[mask]

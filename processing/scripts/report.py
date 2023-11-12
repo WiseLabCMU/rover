@@ -50,4 +50,5 @@ def _main(args):
 
     axs[0].legend(ncols=4)
     fig.tight_layout()
-    fig.savefig(os.path.join(args.path, "speed_report.pdf"))
+    fig.savefig(os.path.join(
+        args.path, "{}_speed_report.pdf".format(os.path.basename(args.path))))

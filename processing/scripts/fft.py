@@ -1,9 +1,4 @@
-"""Run Range/Doppler/Azimuth FFT and create radar frames.
-
-Takes a `radarpackets.h5` file creating raw radar packets from `collect.py`,
-and creates a `radar.h5` file containing raw radar (range, doppler, azimuth)
-images.
-"""
+"""Run Range/Doppler/Azimuth FFT and create radar frames (`radar.h5`)."""
 
 import os
 import json
@@ -15,7 +10,9 @@ from process import AWR1843Boost, AWR1843BoostDataset
 
 
 def _parse(p):
-    p.add_argument("-p", "--path", help="Dataset path.")
+    p.add_argument(
+        "-p", "--path",
+        help="Dataset path; should contain a `radarpackets.h5` file.")
     p.add_argument(
         "-v", "--overwrite", help="Overwrite existing data file.",
         default=False, action='store_true')
@@ -32,7 +29,7 @@ def _open_files(path: str, overwrite: bool = False):
     an error on `h5py.File(... 'w')`.
     """
     packetfile = h5py.File(os.path.join(path, "radarpackets.h5"), "r")
-    packets = packetfile["scan"]["packet"]
+    packets = packetfile["scan"]["packet"]  # type: ignore
 
     if overwrite:
         try:
@@ -67,10 +64,11 @@ def _main(args):
     total_size = 0
     speed_data, t_data = [], []
 
-    _batches = int(np.ceil(packets.shape[0] / args.batch))
+    _batches = int(np.ceil(packets.shape[0] / args.batch))  # type: ignore
     for _ in tqdm(range(_batches)):
         try:
-            rda, speed, t = _process_batch(radar, packets[:args.batch])
+            rda, speed, t = _process_batch(
+                radar, packets[:args.batch])  # type: ignore
 
             total_size += rda.shape[0]
             rda_dataset.resize((total_size, *radar.image_shape))
@@ -81,7 +79,7 @@ def _main(args):
         except Exception as e:
             print(e)
 
-        packets = packets[args.batch:]
+        packets = packets[args.batch:]  # type: ignore
 
     outfile.create_dataset("speed", data=np.concatenate(speed_data))
     outfile.create_dataset("t", data=np.concatenate(t_data))

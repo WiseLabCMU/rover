@@ -38,9 +38,14 @@ FLAGS?=
 RADAR=$(DIR)/radar.h5
 TRAJ_H5=$(DIR)/trajectory.h5
 REPORT=$(DIR)/report.pdf
+GTMAP=$(DIR)/map.npz
 
-.phony: process
-process: $(RADAR) $(TRAJ_H5) $(REPORT)
+.phony: process fft traj report map
+process: $(RADAR) $(TRAJ_H5) $(REPORT) $(GTMAP)
+fft: $(RADAR)
+traj: $(TRAJ_H5)
+report: $(REPORT)
+map: $(GTMAP)
 
 $(RADAR):
 	python process.py fft -p $(DIR)
@@ -50,3 +55,10 @@ $(TRAJ_H5):
 
 $(REPORT): $(RADAR) $(TRAJ_H5)
 	python process.py report -p $(DIR)
+
+$(GTMAP): $(TRAJ_H5)
+	python process.py map -p $(DIR)
+
+.phony: typecheck
+typecheck:
+	python -m mypy .

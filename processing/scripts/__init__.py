@@ -9,10 +9,11 @@
 .
 """
 
-from . import fft, trajectory, report
+from . import fft, trajectory, report, map
 
 commands = {
     "fft": fft,
     "trajectory": trajectory,
-    "report": report
+    "report": report,
+    "map": map
 }

@@ -38,6 +38,14 @@ Control System Options:
 
 See the [setup guide](docs/setup.md).
 
+## Data Collection Guidelines
+
+1. **Keep a reasonable speed**. DART will reject data when the speed exceeds 0.89 m/s (due to doppler "wrapping") or is less than 0.2 m/s (due to overly wide doppler bins). High speeds may lead to inconsistent velocity estimates by cartographer, so we suggest targeting **0.5m/s**.
+2. **Move smoothly**, again to assist cartographer in velocity estimation.
+3. **Keep the radar above your head when moving through tight spaces**. The LIDAR has a minimum distance of 0.3m, and can lose tracking in tight spaces if you obscure half of its viewing range.
+4. **Scan high and low**. The actual FOV of the radar is relatively narrow, so you should explicitly scan low and high points.
+5. **Emphasize occlusion**. Basically any radar processing algorithm will work in a featureless metal box. Try to capture complex geometry and occlusion patterns (e.g. going behind walls, furniture, etc).
+
 ## Usage
 
 Note that these steps should be performed simultaneously on the Linux and Windows computer. In particular, `make start` and `python collect.py` should be performed right before the actual data collection step to avoid excess file size.
@@ -52,6 +60,7 @@ For a detailed step-by-step breakdown which bypasses any high-level automation f
 - On each data collection (~30 seconds):
     1. Plug in the LIDAR. Wait until you can hear/feel the LIDAR reaching a steady state after spinning up.
     2. Start data collection: `OUT=lidar.bag make start` (replace `lidar.bag` with the desired output file name).
+        - **NOTE**: it may take *up to 30 seconds* for data to start being collected. Start LIDAR data collection **before** starting radar data collection.
     3. Stop data collection: `make stop`.
     4. Unplug the LIDAR.
 - Cleanup: `make deinit`
