@@ -60,7 +60,8 @@ For a detailed step-by-step breakdown which bypasses any high-level automation f
 - On each data collection (~30 seconds):
     1. Plug in the LIDAR. Wait until you can hear/feel the LIDAR reaching a steady state after spinning up.
     2. Start data collection: `OUT=lidar.bag make start` (replace `lidar.bag` with the desired output file name).
-        - **NOTE**: it may take *up to 30 seconds* for data to start being collected. Start LIDAR data collection **before** starting radar data collection.
+        - **NOTE**: it may take *up to 30 seconds* for data to start being collected; one way to check is to watch the file size of `lidar.active.bag`, and wait until it starts to increase rapidly.
+        - Starting LIDAR data collection **before** starting radar data collection is suggested.
     3. Stop data collection: `make stop`.
     4. Unplug the LIDAR.
 - Cleanup: `make deinit`

@@ -1,4 +1,4 @@
-"""Data Processing Library.
+r"""Data Processing Library.
 
 ::
      ______  _____  _    _ _______  ______

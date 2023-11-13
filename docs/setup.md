@@ -18,6 +18,7 @@
     - You may need to install the [mmWave SDK](https://www.ti.com/tool/MMWAVE-SDK).
     - Make sure that all 6 COM ports are detected as shown in Step 6 / Figure 4. If the `XDS110 Class` ports are not detected, see the note about installing [EMUPACK](http://processors.wiki.ti.com/index.php/XDS_Emulation_Software_Package).
     - **NOTE**: you may need to disable windows firewall, which might block the ports used by the radar by default.
+    - **NOTE**: keep a copy of the mmWave installer. If the radar computer loses power while mmWave studio is running, it may become corrupted in a subtle way and require reinstallation (the symptoms we observed were a "null reference" error when trying to start data collection (but not initialize the radar/capture card), and mmWave studio failing to read the FPGA version).
 
 3. Clone this repository and install dependencies.
     ```sh
