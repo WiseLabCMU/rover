@@ -2,6 +2,7 @@
 
 import h5py
 import os
+import json
 import numpy as np
 from scipy.ndimage import binary_dilation
 
@@ -16,8 +17,8 @@ def _parse(p):
         "-v", "--overwrite", help="Overwrite existing data file.",
         default=False, action='store_true')
     p.add_argument(
-        "-s", "--smooth", help="Gaussian filter to apply to raw data points.",
-        default=-1.0, type=float)
+        "-s", "--smoothing", default=-1.0, type=float,
+        help="Gaussian filter to apply to raw data points.")
     p.add_argument(
         "--min_speed", help="Minimum speed threshold (m/s).",
         default=0.2, type=float)
@@ -35,7 +36,7 @@ def _parse(p):
 
 def _main(args):
 
-    traj = Trajectory.from_csv(args.path, smooth=args.smooth)
+    traj = Trajectory.from_csv(args.path, smooth=args.smoothing)
 
     radar = AWR1843Boost()
     t_radar = np.array(h5py.File(os.path.join(args.path, "radar.h5"))['t'])
@@ -63,3 +64,12 @@ def _main(args):
     outfile = h5py.File(os.path.join(args.path, "trajectory.h5"), 'w')
     for k, v in poses.items():
         outfile.create_dataset(k, data=v)
+
+    with open(os.path.join(args.path, "metadata.json"), 'w') as f:
+        keys = [
+            "smoothing", "min_speed", "max_accel", "accel_excl", "speed_excl"]
+        meta = {k: getattr(args, k) for k in keys}
+        json.dump({
+            "n_frames": valid.shape[0],
+            "total_time": poses['t'][-1] - poses['t'][0], **meta
+        }, f, indent=4)

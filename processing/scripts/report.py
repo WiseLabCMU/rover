@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 def _parse(p):
     p.add_argument("-p", "--path", help="Dataset path.")
     p.add_argument(
-        "-n", "--rows", default=8, type=int, help="Number of rows to plot.")
+        "-n", "--rows", default=0, type=int, help="Number of rows to plot.")
     return p
 
 
@@ -32,7 +32,10 @@ def _main(args):
     _valid = valid * 0.1
     _valid[valid == 0] = np.nan
 
-    fig, axs = plt.subplots(args.rows, 1, figsize=(8.5, 11))
+    if args.rows <= 0:
+        args.rows = int(np.ceil(t_slam[-1] / 60))
+
+    fig, axs = plt.subplots(args.rows, 1, figsize=(8, args.rows * 1.5))
     for ax in axs:
         ax.plot(t_slam, speed_slam, label='Measured speed', linewidth=1)
         ax.plot(t_radar, speed_radar, label='Inferred speed', linewidth=1)
