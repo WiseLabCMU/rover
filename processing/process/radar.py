@@ -72,27 +72,27 @@ class AWR1843Boost(NamedTuple):
             return cls(**json.load(f))
 
     @property
-    def chirp_size(self):
+    def chirp_size(self) -> int:
         """Number of complex entries in each chirp."""
         return self.chirploops * self.num_rx * self.num_tx * self.chirplen
 
     @property
-    def chirp_shape(self):
+    def chirp_shape(self) -> tuple[int, int, int]:
         """Radar chirp shape."""
         return (self.chirploops * self.num_tx, self.num_rx, self.chirplen)
 
     @property
-    def frame_time(self):
+    def frame_time(self) -> float:
         """Time per frame (in seconds)."""
         return self.framelen * self.scan_dt
 
     @property
-    def image_shape(self):
+    def image_shape(self) -> tuple[int, int, int]:
         """Radar range-azimuth-doppler image shape."""
         return (self.max_range, self.framelen, 8)
 
     @property
-    def min_range(self):
+    def min_range(self) -> int:
         """Minimum valid range bin, after accounting for calibration."""
         range_bin = self.rmax / self.chirplen
         return max(0, math.ceil(-self.calibration / range_bin))
@@ -248,7 +248,7 @@ class AWR1843Boost(NamedTuple):
         res_arr = self.remove_artifact(jnp.concatenate(res, axis=0))
         return to_float16(res_arr / self.scale), jnp.concatenate(speed)
 
-    def to_instrinsics(self) -> dict:
+    def to_intrinsics(self) -> dict:
         """Export intrinsics configuration file."""
         bin_doppler = self.dmax / self.framelen
         bin_range = self.rmax / self.chirplen
@@ -256,7 +256,8 @@ class AWR1843Boost(NamedTuple):
             "gain": "awr1843boost_az8",
             "r": [
                 bin_range * self.min_range + self.calibration,
-                bin_range * min(self.min_range + self.max_range, self.chirplen)
+                bin_range * (
+                    min(self.min_range + self.max_range, self.chirplen) - 1)
                 + self.calibration,
                 min(self.max_range, self.chirplen)
             ],

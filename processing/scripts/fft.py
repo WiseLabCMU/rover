@@ -55,7 +55,7 @@ def _main(args):
     # Replace this when supporting more radars in the future
     radar = AWR1843Boost()
     with open(os.path.join(args.path, "sensor.json"), 'w') as f:
-        json.dump(radar.to_instrinsics(), f, indent=4)
+        json.dump(radar.to_intrinsics(), f, indent=4)
 
     rs = radar.image_shape
     rda_dataset = outfile.create_dataset(
