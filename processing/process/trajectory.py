@@ -30,7 +30,7 @@ class Trajectory(NamedTuple):
 
     @classmethod
     def from_csv(
-        cls, path: str, smooth: float = 1.0
+        cls, path: str, smooth: float = 1.0, offset: float = 0.0
     ) -> "Trajectory":
         """Initialize from dataframe output from cartographer.
 
@@ -41,9 +41,13 @@ class Trajectory(NamedTuple):
             `field.header.stamp` (in ns), `field.transform.translation.{xyz}`,
             `field.transform.rotation.{xyzw}`.
         smooth: Gaussian smoothing to apply.
+        offset: manual time offset to add (if nonzero).
         """
         df = pd.read_csv(os.path.join(path, "trajectory.csv"))
         t_slam = np.array(df["field.header.stamp"]) / 1e9
+
+        if offset != 0:
+            t_slam += offset
 
         xyz = np.array(
             [df["field.transform.translation." + char] for char in "xyz"]).T

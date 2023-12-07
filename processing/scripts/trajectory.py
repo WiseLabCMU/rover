@@ -31,12 +31,16 @@ def _parse(p):
     p.add_argument(
         "--speed_excl", help="Exclusion width for speed violations.",
         default=5, type=int)
+    p.add_argument(
+        "--offset", help="Manual time offset.",
+        default=0.0, type=float)
     return p
 
 
 def _main(args):
 
-    traj = Trajectory.from_csv(args.path, smooth=args.smoothing)
+    traj = Trajectory.from_csv(
+        args.path, smooth=args.smoothing, offset=args.offset)
 
     radar = AWR1843Boost()
     t_radar = np.array(h5py.File(os.path.join(args.path, "radar.h5"))['t'])
@@ -70,6 +74,6 @@ def _main(args):
             "smoothing", "min_speed", "max_accel", "accel_excl", "speed_excl"]
         meta = {k: getattr(args, k) for k in keys}
         json.dump({
-            "n_frames": valid.shape[0],
+            "n_frames": valid.shape[0], "offset": args.offset,
             "total_time": poses['t'][-1] - poses['t'][0], **meta
         }, f, indent=4)

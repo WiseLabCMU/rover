@@ -40,12 +40,16 @@ TRAJ_H5=$(DIR)/trajectory.h5
 REPORT=$(DIR)/report.pdf
 GTMAP=$(DIR)/map.npz
 
-.phony: process fft traj report map
+.phony: process reprocess fft traj report map
 process: $(RADAR) $(TRAJ_H5) $(REPORT) $(GTMAP)
 fft: $(RADAR)
 traj: $(TRAJ_H5)
 report: $(REPORT)
 map: $(GTMAP)
+
+reprocess:
+	python process.py trajectory -p $(DIR) $(FLAGS)
+	python process.py report -p $(DIR)
 
 $(RADAR):
 	python process.py fft -p $(DIR)

@@ -15,7 +15,7 @@ def _parse(p):
         "--padding", type=float, nargs='+', default=[4.0, 4.0, 2.0],
         help="Region padding relative to trajectory min/max.")
     p.add_argument(
-        "--resolution", default=10.0, type=float,
+        "--resolution", default=20.0, type=float,
         help="Grid resolution in grid cells per meter.")
     return p
 
