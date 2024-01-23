@@ -101,15 +101,34 @@ These steps assume you have already set up the system according to the [instruct
 
 1. Process radar data:
     ```sh
-    python preprocess.py -p <dataset_folder>
+    python process.py fft -p <dataset_folder>
     ```
     - Pass `<dataset_folder>` as the name of the folder containing `radarpackets.h5` and `trajectory.csv` (i.e. the dataset path).
-    - You may need to tune `--smooth 1.0`, which indicates the gaussian smoothing width (higher `--smooth` == more smoothing) to be applied to the velocity.
-    - You may also need to reduce `--batch` if your GPU does not have enough memory (default: `--batch 1000000`)
+    - This should create a `radar.h5` file in the `<dataset_folder>`.
+    - You may need to reduce `--batch` if your GPU does not have enough memory (default: `--batch 1000000`)
 
-2. (Optional) Verify time synchronization:
+2. Process trajectory:
+    ```sh
+    python process.py trajectory -p <dataset_folder>
+    ```
+    - This should create a `trajectory.h5` file.
+    - Parameters to tune:
+        - `--smooth -1`: gaussian smoothing width (higher `--smooth` == more smoothing) to be applied to the velocity; disabled by default (if `<0`).
+        - `--min_speed 0.2`: minimum speed threshold for dataset inclusion
+        - `--max_accel 2.0`: maximum acceleration threshold for relocalization jitter rejection
+        - `accel_excl 15`: number of samples to exclude on either side of each detected jitter event
+        - `speed_excl 5`: number of samples to exclude on either side when the minimum or maximum speed is exceeded
+
+3. Create "ground truth" lidar map:
+    ```sh
+    python process.py map pl <dataset_folder>
+    ```
+    - This should create a `map.npz` file.
+
+4. (Optional) Verify time synchronization:
     ```sh
     python speed_report.py <dataset_folder>
     ```
-    - Check that the inferred speed mostly matches the measured/processed speed.
+    - This creates a `speed_report.pdf` file showing the SLAM-measured and radar-inferred speed (in m/s) over time (seconds).
+    - Check that the inferred speed mostly matches the measured/processed speed. In particular, pay attention to any large offsets which may indicate a time synchronization issue.
     - Make sure that not too much of the dataset is invalid (due to speeds outside the specified window).
